@@ -68,10 +68,30 @@ int main(int argc, char** argv) {
         return 1;
     }
 
-    string fileName = argv[argc - 1];
+    string fileName;
     bool countBytes = false, countLines = false, countWords = false, countChars = false;
 
-    for (unsigned int i = 1; i < (argc - 1); i++) {
+    // Determine the position of fileName arguement
+    int fileNameIndex = -1;
+    for (int i = 1; i < argc; i++) {
+        if (argv[i][0] != '-') {
+            fileNameIndex = i;
+            fileName = argv[i];
+            break;
+        }
+    }
+
+    // Error handling if no file name is provided
+    if (fileNameIndex == -1) {
+        cerr << "Error: No file name provided\n";
+        return 1;
+    }
+
+    // Checking for process flags
+    for (unsigned int i = 1; i < argc; i++) {
+        if (i == fileNameIndex) {
+            continue;
+        }
         if (strcmp(argv[i], "-c") == 0) {
             countBytes = true;
         } else if (strcmp(argv[i], "-l") == 0) {
@@ -90,6 +110,7 @@ int main(int argc, char** argv) {
         countBytes = true;
     }
 
+    // Ouput results
     if (countLines) {
         cout << getLines(fileName) << " ";
     }
